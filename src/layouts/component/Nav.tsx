@@ -4,8 +4,9 @@ import {
     AiOutlineCloudServer as Logo,
     AiOutlinePlusSquare,
 } from "react-icons/ai";
-
+import {useSelector} from 'react-redux'
 import {  FaEllipsisH } from "react-icons/fa";
+import { RootState } from "../../redux/store/store";
 
 
 type NAV_PROPS = {
@@ -14,11 +15,10 @@ type NAV_PROPS = {
 
 const Nav = ({ children }: NAV_PROPS) => {
 
-    const user = JSON.parse(localStorage.getItem('user') || '');
+    const { user } = useSelector((state:RootState)=> state.auth)
 
+    return (
 
-
-  return (
       <nav className='sidebar-container'>
           <div className='nav-logo'>
               <Logo size={40} />

@@ -76,7 +76,7 @@ const Dasboard = () => {
          
         <FoldersGrid folders={[{}]} />
         
-
+        <div className="section-divider"></div>
         <div className="breadcrumb">
           <div className="breadcrumb-left-items">
             <div className="breadcrumb-left-item addon">

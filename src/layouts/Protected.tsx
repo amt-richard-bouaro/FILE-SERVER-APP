@@ -8,6 +8,10 @@ type USER_ROLES = {
 const Protected = (props:USER_ROLES) => {
 
     const { user } = useSelector((state: RootState) => state.auth);
+
+    console.log(user);
+    
+
     if (user) {
 
         if (props.restrictedTo.includes(user.role)) {

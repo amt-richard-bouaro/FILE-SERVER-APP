@@ -10,7 +10,7 @@ type filesByType = {
 const FoldersGrid = ({ folders }: filesByType) => {
     return (
         <div className="folders-grid">
-            {folders.map(folder => <Folder />)
+        {folders.map((folder, index) => <Folder key={index} />)
           }  
         </div>
   )
