@@ -1,8 +1,8 @@
 
 export const drawer = () => {
     // window.onload = () => {
-        const panel = document.getElementById('side-information-panel')! as HTMLDivElement,
-            dragger = document.querySelector('#panelDrager')! as HTMLDivElement;
+    const panel = document.getElementById('side-information-panel')! as HTMLDivElement;
+            // dragger = document.querySelector('#panelDrager')! as HTMLDivElement;
   
         console.log('touchstart');
  

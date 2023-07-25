@@ -19,9 +19,37 @@ export const docsApiSlice = apiSlice.injectEndpoints({
                 
             })
         }),
+        update: builder.mutation({
+            query: (data) => ({
+                url: `${DOCS_ENDPOINT}/update/${data._id}`,
+                method: 'PUT',
+                body: data.data
+            })
+        }),
+        delete: builder.mutation({
+            query: (data) => ({
+                url: `${DOCS_ENDPOINT}/destroy/${data}`,
+                method: 'DELETE',
+                
+            })
+        }),
+        download: builder.mutation({
+            query: (data) => ({
+                url: `${DOCS_ENDPOINT}/download/${data}`,
+                method: 'GET',
+                
+            })
+        }),
+        search: builder.mutation({
+            query: (data) => ({
+                url: `${DOCS_ENDPOINT}/search`,
+                method: 'POST',
+                body:data
+            })
+        }),
         
     })
 });
 
 
-export const { useDocumentsMutation, useNewMutation } = docsApiSlice;
+export const { useDocumentsMutation, useNewMutation, useUpdateMutation, useDeleteMutation, useDownloadMutation, useSearchMutation } = docsApiSlice;

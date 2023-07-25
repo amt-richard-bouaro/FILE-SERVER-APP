@@ -1,10 +1,10 @@
-import { AiOutlineCloudServer as Logo, AiOutlinePlusSquare, AiOutlineAppstore, AiOutlineTable } from "react-icons/ai";
-import { GoHome, GoFileDirectory, GoClock, GoGear, GoSearch, GoStar } from "react-icons/go";
-import { PiListFill, PiSquaresFourBold, PiFolderSimpleBold, PiCaretDownBold, PiDotsThreeVerticalBold } from "react-icons/pi";
-import { BsFillFileEarmarkPdfFill, BsFillFileEarmarkWordFill } from "react-icons/bs";
+
+import { GoStar } from "react-icons/go";
+import { PiDotsThreeVerticalBold } from "react-icons/pi";
+import { BsFillFileEarmarkPdfFill,  } from "react-icons/bs";
 import { FILES_TYPE } from "./types";
 import { _file_size, _truncate } from "../../utils";
-
+import moment from 'moment';
 
 type propsType = {
     file: FILES_TYPE,
@@ -39,8 +39,8 @@ const File = ({file, onClick}: propsType) => {
                   <span className='readable-file-size'> { _file_size(file.size)}</span>
               </div>
               <div className="file-uploaded-at">
-                  <span className='file-uploaded-at-text'>Date</span>
-                  <span className='file-uploaded-at-date'>20/20/2020</span>
+                  <span className='file-uploaded-at-text'>Since</span>
+                  <span className='file-uploaded-at-date'>{moment(file.updated_at).fromNow()}</span>
               </div>
           </div>
       </div>

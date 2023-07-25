@@ -1,136 +1,171 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react'
-import {useSelector} from 'react-redux'
-import { useDocumentsMutation } from '../../redux/slices/docsApiSlice';
+import { useDocumentsMutation, useDeleteMutation, useUpdateMutation, useDownloadMutation, useSearchMutation } from '../../redux/slices/docsApiSlice';
+import { setDocuments, setSelectedDocument, clearSelectedDocument } from '../../redux/slices/docsSlice';
 
 import { AiOutlineTable } from "react-icons/ai";
 import { BsFillFileEarmarkWordFill } from "react-icons/bs";
-import { GoDownload, GoShare } from "react-icons/go";
-import { PiListFill, PiSquaresFourBold, PiFolderSimpleBold, PiCaretDownBold, } from "react-icons/pi";
+import { GoDownload, GoShare, GoPencil } from "react-icons/go";
+import { PiListFill, PiSquaresFourBold, PiFolderSimpleBold, PiCaretDownBold, PiFolderOpenBold } from "react-icons/pi";
+
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import Content, { Body } from '../../layouts/component/Content';
 import Header from '../../layouts/component/Header';
 import Drawer from '../../layouts/component/Drawer';
 import FilesGrid, { File } from '../../compnents/FilesGrid';
 import { DOCS_TYPE } from './types';
-import { _file_size } from '../../utils';
-import { drawer } from '../../layouts/layoutScript';
+import { _extractTitle, _file_size } from '../../utils';
+// import { drawer } from '../../layouts/layoutScript';
 import { RootState } from '../../redux/store/store';
+import Button from '../../compnents/button';
+import { DOC_INFO } from '../NewFile/types';
+import { FieldGroup } from '../../compnents/form-input';
 
-const data = [
-    {
-        "_id": "94724387-687b-48e1-adfc-21b38fee4894",
-        "title": "LCF-10842: Different you different me",
-        "description": "Everyone is different in their own way",
-        "name": "LCF-10842-gctu.jpg",
-        "size": 21133,
-        "downloaded_count": 0,
-        "emailed_count": 0,
-        "user_id": "1abd52de-d7b5-48e9-b03b-be56ab07eb2a",
-        "location": "src\\Uploads\\LCF-10842-gctu.jpg",
-        "created_at": "2023-07-18T18:45:42.941Z",
-        "updated_at": "2023-07-18T18:45:42.941Z",
-        "mime_type": "image/jpeg"
-    },
-    {
-        "_id": "c45428fa-8ff9-438e-9746-d6e11649751e",
-        "title": "LCF-64055: Different you different me",
-        "description": "Everyone is different in their own way",
-        "name": "LCF-64055-Introduction to Java Programming.pptx",
-        "size": 1475702,
-        "downloaded_count": 0,
-        "emailed_count": 0,
-        "user_id": "1abd52de-d7b5-48e9-b03b-be56ab07eb2a",
-        "location": "src\\Uploads\\LCF-64055-Introduction to Java Programming.pptx",
-        "created_at": "2023-07-18T18:45:25.386Z",
-        "updated_at": "2023-07-18T18:45:25.386Z",
-        "mime_type": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    },
-    {
-        "_id": "7233d4d1-749b-43cc-b6ba-29d6dc48564a",
-        "title": "LCF-81472: Different you different me",
-        "description": "Everyone is different in their own way",
-        "name": "LCF-81472-word.docx",
-        "size": 52314,
-        "downloaded_count": 0,
-        "emailed_count": 0,
-        "user_id": "1abd52de-d7b5-48e9-b03b-be56ab07eb2a",
-        "location": "src\\Uploads\\LCF-81472-word.docx",
-        "created_at": "2023-07-18T18:44:49.527Z",
-        "updated_at": "2023-07-18T18:44:49.527Z",
-        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    },
-    {
-        "_id": "666257ce-4d45-4b0c-8dc6-8df5b3b5000f",
-        "title": "LCF-84351: Different you different me",
-        "description": "Everyone is different in their own way",
-        "name": "LCF-84351-tut.pdf",
-        "size": 1272254,
-        "downloaded_count": 0,
-        "emailed_count": 0,
-        "user_id": "1abd52de-d7b5-48e9-b03b-be56ab07eb2a",
-        "location": "src\\Uploads\\LCF-84351-tut.pdf",
-        "created_at": "2023-07-18T18:43:34.448Z",
-        "updated_at": "2023-07-18T18:43:34.448Z",
-        "mime_type": "application/*"
-    },
-    {
-        "_id": "0d24b662-deda-45a9-80b2-0116cc709b6e",
-        "title": "LCF-59764: Different you different me",
-        "description": "Everyone is different in their own way",
-        "name": "LCF-59764-wallpaperflare.com_wallpaper (2).jpg",
-        "size": 190997,
-        "downloaded_count": 0,
-        "emailed_count": 0,
-        "user_id": "1abd52de-d7b5-48e9-b03b-be56ab07eb2a",
-        "location": "src\\Uploads\\LCF-59764-wallpaperflare.com_wallpaper (2).jpg",
-        "created_at": "2023-07-18T05:03:30.956Z",
-        "updated_at": "2023-07-18T18:15:32.636Z",
-        "mime_type": "image/jpeg"
-    },
-    {
-        "_id": "42637310-5f21-40da-9b14-92ab4d74c66a",
-        "title": "LCF-68274: something makes me laugh",
-        "description": "describing something laughing",
-        "name": "LCF-68274-wallpaperflare.com_wallpaper (2).jpg",
-        "size": 190997,
-        "downloaded_count": 0,
-        "emailed_count": 0,
-        "user_id": "1abd52de-d7b5-48e9-b03b-be56ab07eb2a",
-        "location": "src\\Uploads\\LCF-68274-wallpaperflare.com_wallpaper (2).jpg",
-        "created_at": "2023-07-18T05:02:37.635Z",
-        "updated_at": "2023-07-18T18:15:32.636Z",
-        "mime_type": "image/jpeg"
-    },
-    {
-        "_id": "f2fde312-c23c-4ff9-b765-7d10a64b7dc0",
-        "title": "LCF-60825:Just checking how it works",
-        "description": "Description too has been modified for no reason. AH!",
-        "name": "LCF-60825-wallpaperflare.com_wallpaper (2).jpg",
-        "size": 190997,
-        "downloaded_count": 0,
-        "emailed_count": 0,
-        "user_id": "1abd52de-d7b5-48e9-b03b-be56ab07eb2a",
-        "location": "src\\Uploads\\LCF-60825-wallpaperflare.com_wallpaper (2).jpg",
-        "created_at": "2023-07-18T03:16:59.851Z",
-        "updated_at": "2023-07-18T18:15:32.636Z",
-        "mime_type": "image/jpeg"
-    }
-]
+import moment from 'moment';
+import Feedback from '../../compnents/FeedBacks';
+
 
 const Files = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch()
 
     const [getDocuments, { isLoading, isSuccess }] = useDocumentsMutation();
 
-    const [documents, setDocuments] = useState<DOCS_TYPE[] | null>(null)
+    const [updateDocuments] = useUpdateMutation();
+    const [deleteDocument] = useDeleteMutation();
+    const [downloadDocument] = useDownloadMutation();
+    const [searchDocument] = useSearchMutation();
 
-    const [selectedDoc, setSelectedDoc] = useState<DOCS_TYPE | null>(null);
+    // const [documents, setDocuments] = useState<DOCS_TYPE[]>([])
+
+    // const [selectedDoc, setSelectedDoc] = useState<DOCS_TYPE | null>(null);
+
+    const [feedback, setFeedback] = useState<{type:'error'|'success', message:string} | null>(null);
+
+    const [allowEdit, setAllowEdit] = useState(false)
 
     const { user } = useSelector((state: RootState) => state.auth);
-    
+
+    const { selectedDocument, documents } = useSelector((state: RootState) => state.documents);
+
+
+    const { register, handleSubmit,setValue, formState: { errors } } = useForm<DOC_INFO>({
+        resolver: zodResolver(DOC_INFO)
+    });
+
+
+    const markDocAsActive = (_id: string) => {
+        const doc = document.getElementById(_id)! as HTMLDivElement;
+        const docs = document.querySelector('.file-card.active');
+        const panel = document.getElementById('side-information-panel')!
+
+        panel.style.right = '0px';
+
+        if (docs) {
+            docs.classList.remove('active');
+        }
+        if (doc) {
+            doc.classList.add('active');
+        }
+
+        panel.style.right = '0px';
+
+        localStorage.setItem('s_doc', JSON.stringify({ _id }));
+
+
+    }
+
+
+    const handleEditFileSubmit: SubmitHandler<DOC_INFO> = async (data) => {
+
+        try {
+
+
+            const docID = selectedDocument?._id
+
+            if (typeof docID !== "undefined") {
+
+                const response = await updateDocuments({ data, _id: docID }).unwrap();
+
+                if (response.code === 'DOCUMENT_MODIFIED') {
+                    setFeedback({ type: 'success', message: response.message })
+                    
+                    setTimeout(() => {
+                        setFeedback(null);
+                    }, 5000);
+                } else {
+                    setFeedback({ type: 'error', message: response.message })
+                }
+
+                
+                markDocAsActive(docID);
+                setAllowEdit(false);
+
+                const updatedDocuments = documents.map(doc => 
+
+                    doc._id === docID ? {...doc, title:`${doc.title.slice(0, 10)} ${data.title}`, description:data.description} : doc
+                )
+
+                dispatch(setDocuments(updatedDocuments))
+
+
+            }
+            
+            
+
+        } catch (error) {
+
+        setFeedback({ type: 'error', message: 'Error: Something went wrong' })
+
+        }
+
+
+
+
+    }
+
+    const handleDeleteFileSubmit = async (_id: string) => {
+        try {
+            
+            const response = await deleteDocument(_id).unwrap();
+            
+
+            const newDocuments = documents.filter(d=>d._id !== _id);
+            dispatch(setDocuments(newDocuments));
+            dispatch(clearSelectedDocument());
+
+        } catch (error) {
+            console.log(error);
+            
+        }
+
+    }
+
+
+    const handleDownloadDocument = async (_id:string) => {
+        
+        const response = await downloadDocument(_id)
+
+        console.log(response);
+        
+    }
+
+    const handleSearch = async (e:React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.target.value);
+
+        dispatch(clearSelectedDocument())
+
+        let val = e.target.value;
+
+        const response = await searchDocument({search:val}).unwrap();
+
+        dispatch(setDocuments(response.data)); 
+        
+    }
 
     const docs = async () => {
 
@@ -138,9 +173,12 @@ const Files = () => {
 
             const docArray = await getDocuments({}).unwrap();
 
-            console.log(docArray);
 
-
+            if (docArray.data) {
+                 dispatch(setDocuments(docArray.data)) 
+            }
+         
+            
         } catch (error) {
             console.log(error);
 
@@ -148,48 +186,43 @@ const Files = () => {
 
     }
 
+
+    useEffect(() => {
+        docs();
+      
+    }, []);
+
    
-    const markDocAsActive = (_id:string) => {
-        const doc = document.getElementById(_id)! as HTMLDivElement;
-        const docs = document.querySelector('.file-card.active');
-        const panel = document.getElementById('side-information-panel')! as HTMLDivElement
 
-       if (docs) {
-        docs.classList.remove('active');
-       }
-       if (doc) {
-        doc.classList.add('active');
-        }
-        
-        panel.style.right = '0px';
+    useEffect(() => {
 
-        localStorage.setItem('s_doc', JSON.stringify({_id}));
-        
-    }
-
-    useEffect(() => {      
-        
         const s_doc = localStorage.getItem('s_doc');
 
-        if (typeof s_doc === 'string') {
+        if (s_doc) {
 
-            const previousSelectedDoc =  JSON.parse(s_doc);
+            const previousSelectedDoc = JSON.parse(s_doc);
 
-            const doc = data.filter(d => d._id === previousSelectedDoc._id);
-            if (doc.length > 0) {
-                setSelectedDoc(doc[0]);
-                markDocAsActive(doc[0]._id)
+            const docs = documents.filter(d => d._id === previousSelectedDoc._id);
+            
+            
+            if (docs.length > 0) {
+
+                let doc = docs[0];
+                setValue('title', _extractTitle(doc.title));
+                setValue('description', doc.description);
+                dispatch(setSelectedDocument(doc))
+                // setSelectedDoc(doc);
+                markDocAsActive(doc._id)
             }
         }
 
+        console.log('2 useeffects');
         
 
-       
-       
-        docs();
-        drawer();
 
-    }, [])
+    }, [documents, selectedDocument, setValue])
+
+    
 
 
     return (
@@ -204,12 +237,12 @@ const Files = () => {
                     <div className="section-divider"></div>
                     <div className="modal-footer">
                         <button id='btn'>Cancel</button>
-                        
+
                     </div>
                 </div></div>
             <Content>
- 
-                <Header />
+
+                <Header onSearch={(e)=>handleSearch(e)} />
                 <Body>
                     <div className="breadcrumb">
                         <div className="breadcrumb-left-items">
@@ -240,77 +273,98 @@ const Files = () => {
                         </div>
                     </div>
 
-                   
                     
-
+        {documents.length > 0 ?
                     <FilesGrid >
                         {
-
-                            data.map((file, index) =>
+                            
+                            documents.map((file, index) =>
                                 <File key={index} file={file} onClick={(e, file) => {
-                                    // console.log(e, file);
-                                markDocAsActive(file._id)
-                                setSelectedDoc(file);   
+                                   
+                                    markDocAsActive(file._id)
+                                    setAllowEdit(false);
+                                    setValue('title', _extractTitle(file.title));
+                                    setValue('description', file.description);
+                                    dispatch(setSelectedDocument(file))
+                                    // setSelectedDoc(file);
                                 }} />
-                            )
+                                ) 
+                                
                         }
 
-                    </FilesGrid>
+                        </FilesGrid>
+                        
+                        : (
+
+                            <div className="documents-empty">
+                                <PiFolderOpenBold className='empty-icon' size={50}/>
+                                <p>No Available Document Found</p>
+                            </div>
+                        )
+                    }
+
                 </Body>
             </Content>
 
             <Drawer title='File Preview'>
                 {
-                    selectedDoc ? (<>
-             
+                    selectedDocument ? (<>
+
                         <div className='panel-preview-file-icon'>
                             <BsFillFileEarmarkWordFill />
                         </div>
                         <div className="panel-preview-file-name-size">
-                            <h4 className='panel-preview-file-name'>{selectedDoc.name}</h4>
-                            <span className='panel-preview-file-size'> {_file_size(selectedDoc.size)}</span>
+                            <h4 className='panel-preview-file-name'>{selectedDocument.name}</h4>
+                            <span className='panel-preview-file-size'> {_file_size(selectedDocument.size)}</span>
                         </div>
 
                         <div className='section-divider '></div>
                         <div className='preview-file-detail'>
                             <h4>Title</h4>
-                            <p>{selectedDoc.title}
+                            <p>{selectedDocument.title}
 
                             </p>
                         </div>
                         <div className='preview-file-detail'>
                             <h4>File Decription</h4>
-                            <p>{selectedDoc.description}
+                            <p>{selectedDocument.description}
 
                             </p>
                         </div>
                         <div className='preview-file-detail'>
                             <h4>Uploaded On</h4>
-                            <p>Monday 20th December 2023
+                            <p>
+                                {moment(selectedDocument.created_at).format('LLLL')}
 
                             </p>
                         </div>
                         <div className='preview-file-detail'>
                             <h4>Last Update</h4>
-                            <p>Monday 20th December 2023
+                            <p>{moment(selectedDocument.updated_at).format('LLLL')}
 
                             </p>
                         </div>
-
-                        <div className='section-divider '></div>
+                        {
+                            user.role === 'admin' && <>
+                            
+                            <div className='section-divider '></div>
 
                         <div className="file-download-email-stats">
-                        <div className="stats">
+                            <div className="stats">
                                 <div className="stats-item">
-                                    Downloads <span>{selectedDoc.downloaded_count}</span>
-                                </div>   
+                                    Downloads <span>{selectedDocument.downloaded_count}</span>
+                                </div>
                             </div>
                             <div className="stats">
                                 <div className="stats-item">
-                                    Email requests <span>{selectedDoc.emailed_count}</span>
+                                    Email requests <span>{selectedDocument.emailed_count}</span>
                                 </div>
                             </div>
                         </div>
+                            
+                            </>
+}
+                        
 
                         <div className='section-divider '></div>
 
@@ -325,40 +379,75 @@ const Files = () => {
 
                                 </span>
                             </div>
-                            <div className="preview-file-action">
+                            <div className="preview-file-action" onClick={() => handleDownloadDocument(selectedDocument._id)} >
                                 <div className="action-icon-wrapper download">
-                                    <GoDownload />
+                                    <GoDownload  />
                                 </div>
-                                <span>Download
+                                <span >Download
 
 
                                 </span>
                             </div>
                         </div>
+
+                        {
+                        user.role === 'admin' &&  <>
                         <div className='section-divider '></div>
-                        <div className="preview-file-actions" id=''>
-                            <h4 className="preview-file-title">More</h4>
-                            <div className="preview-file-action">
-                                <div className="action-icon-wrapper share">
-                                    <GoShare />
-                                </div>
-                                <span>Edit
+                        <section className="edit-file-section">
+                            <div className="trigger-edit-wrapper" id='trigger-edit' onClick={()=>setAllowEdit(true)}>
+                                <span>Edit This File </span>
+                                <GoPencil id='trigger-edit'/>
+                                    </div>
+                                    
+                                    {feedback ? <Feedback type={feedback.type} message={feedback.message} /> : null}
+                            <form onSubmit={handleSubmit(handleEditFileSubmit)} className="edit-file-form-wrapper" id='editFileForm'>
 
-                                </span>
-                            </div>
-                            <div className="preview-file-action mg-t-20">
-                                <div className="action-icon-wrapper download delete-bg">
-                                    <GoDownload />
+                                <div className="form-title-desc">
+                                            <FieldGroup label={allowEdit ? 'Title' : ''} id="editTitle">
+                                        <input type="text"
+                                            id="editTitle"
+                                            placeholder='Enter file title'
+                                            disabled={!allowEdit}
+                                                    className='form-title-desc field-input ' {...register('title')} />
+                                        {errors.title &&
+                                            <span className='field-validation'>
+                                                {errors.title?.message}
+                                            </span>}
+                                    </FieldGroup>
+                                            <FieldGroup label={allowEdit ? 'Description':''} id="editDescription">
+                                        <textarea id="editDescription" {...register('description')}
+                                            placeholder='Provide file description'
+                                            disabled={!allowEdit}
+                                            className='panel field-textarea'></textarea>
+                                        {errors.description &&
+                                            <span className='field-validation'>
+                                                {errors.description?.message}
+                                            </span>}
+                                    </FieldGroup>
+                                    <Button
+                                        className={`btn btn-primary ${!allowEdit ? 'btn-disabled' : ''}`}
+                                        text='Update File'
+                                        id='edit_file_submit'
+                                        type="submit"
+                                        form="editFileForm"
+                                        // disabled={!allowEdit}
+                                    />
                                 </div>
-                                <span>Delete File
+                            </form>
+                        </section>
+                        <div className='section-divider '></div>
+                        <Button
+                            className='btn btn-delete'
+                            text='Delete File'
+                            id='delete_file_submit'
+                            type="submit"
+                            onClick={()=>handleDeleteFileSubmit(selectedDocument._id)}
+                            /></>       
+}
 
-                                </span>
-                            </div>
-                        </div>
-                    
-                    
-                    </>) : null
-                 }       
+
+                    </>) : <div className="no-doc-selected">No document Selected</div>
+                }
             </Drawer>
 
         </>

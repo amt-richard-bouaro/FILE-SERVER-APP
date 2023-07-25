@@ -35,7 +35,7 @@ function Login() {
 
   useEffect(() => {
      if (user) {
-      navigate('/app/admin/home')
+       user.role === 'admin' ? navigate('/app/admin/home') : navigate('/app');
      }
   }, [navigate, user])
 
@@ -48,11 +48,12 @@ function Login() {
 
       const response = await auth(data).unwrap();
       dispatch(setUser({ ...response.data }));
-      navigate('/app/admin/home');
+      
+      user.role === 'admin' ? navigate('/app/admin/home') : navigate('/app');
 
     } catch (Err) {
       
-      console.log(error);
+      // console.log(error);
 
       const err = Err as FetchBaseQueryError;
 

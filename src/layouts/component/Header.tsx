@@ -9,10 +9,14 @@ import {
 } from "react-icons/go";
 
 
+type HEADER_PROPS_TYPE = {
+
+    onSearch?: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
 
 
 
-const Header = () =>{
+const Header = ({ onSearch }:HEADER_PROPS_TYPE) =>{
 
 
 return (
@@ -21,7 +25,7 @@ return (
           <span className='app-name'>Lizzy</span>
           <div className='other-headers-items'>
               <div className='search-bar-wrapper'>
-                  <input type='search' name='' id='item-search' />
+                    <input type='search' name='' id='item-search' onChange={(event) => onSearch && onSearch(event)} />
                   <label htmlFor='item-search'>
                       <GoSearch />
                   </label>

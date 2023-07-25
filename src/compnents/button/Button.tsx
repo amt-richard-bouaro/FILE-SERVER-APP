@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 
 // import {} from 'react'
 type buttonPropTypes = {
@@ -8,11 +8,17 @@ type buttonPropTypes = {
     type?: string;
     className: string;
   onClick?: () => void;
-    form?:string
+  form?: string
+    disabled?:boolean
 }
-function Button(props:buttonPropTypes) {
+function Button(props: buttonPropTypes) {
+  
+useEffect(() => {
+
+}, [])
+
   return (
-      <button id={props.id} onClick={props.onClick} style={props.style} className={props.className} form={props.form}>{props.text || 'button' }</button>
+      <button id={props.id} onClick={props.onClick} style={props.style} className={props.className} form={props.form} disabled={props.disabled}>{props.text || 'button' }</button>
   )
 }
 
