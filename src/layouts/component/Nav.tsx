@@ -1,13 +1,13 @@
-import axios from "axios";
-import {useState, useEffect} from 'react'
+
+import {useNavigate} from 'react-router-dom'
 import {
     AiOutlineCloudServer as Logo,
-    AiOutlinePlusSquare,
 } from "react-icons/ai";
-import {useSelector} from 'react-redux'
-import {  FaEllipsisH } from "react-icons/fa";
+import {useSelector, useDispatch} from 'react-redux'
+import { FaEllipsisH, FaPowerOff } from "react-icons/fa";
 import { RootState } from "../../redux/store/store";
-
+import { useLogoutMutation } from "../../redux/slices/usersApiSlice";
+import {clearUser} from '../../redux/slices/authSlice'
 
 type NAV_PROPS = {
     children: React.ReactNode
@@ -15,7 +15,28 @@ type NAV_PROPS = {
 
 const Nav = ({ children }: NAV_PROPS) => {
 
-    const { user } = useSelector((state:RootState)=> state.auth)
+
+    const navigate = useNavigate();
+    const [logout] = useLogoutMutation()
+    const dispatch = useDispatch()
+
+    const { user } = useSelector((state: RootState) => state.auth);
+
+
+    const handleLogout = async () => {
+        try {
+
+        const response = await logout({}).unwrap();
+
+            if (response.code === 'LOGGED_OUT') {
+                dispatch(clearUser());
+                navigate('/');
+            }
+
+        } catch (error) {
+            alert('Logout Error')
+        }
+    }
 
     return (
 
@@ -37,8 +58,8 @@ const Nav = ({ children }: NAV_PROPS) => {
                             </ul> 
                         </div> */}
 
-                  <div className='profile-select'>
-                      <FaEllipsisH />
+                    <div className='profile-select' onClick={handleLogout} >
+                        <FaPowerOff />
                   </div>
                   
                   <div className='profile-img'>

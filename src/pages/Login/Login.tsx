@@ -15,11 +15,12 @@ import { useAuthMutation } from "../../redux/slices/usersApiSlice";
 import { setUser } from "../../redux/slices/authSlice";
 import { RootState } from "../../redux/store/store";
 import Feedback from "../../compnents/FeedBacks";
+import { ErrorResponse } from "../../types";
 
 
 function Login() {
 
-  const { register, handleSubmit, formState: { errors } } = useForm<USER_CREDENTIALS>({
+  const { register, handleSubmit, reset,  formState: { errors } } = useForm<USER_CREDENTIALS>({
     resolver: zodResolver(USER_CREDENTIALS)
   });
 
@@ -53,11 +54,15 @@ function Login() {
 
     } catch (Err) {
       
-      // console.log(error);
+      const err: ErrorResponse = Err as ErrorResponse;
 
-      const err = Err as FetchBaseQueryError;
+      if (err.data) {
+        setError({...error, err: true, message:err.data.message});
+      } else {
+        setError({ ...error, err: true, message: 'Something went wrong while trying to login'});
+      }
 
-      setError({...error, err: true, message: err.status === 'FETCH_ERROR'? 'Error: could not reach the server. Please try again later.': 'Error: something went wrong'});
+      
     }
     
   };
@@ -101,7 +106,12 @@ function Login() {
           form="loginForm"
         />
       </form>
+      <div className='account-link'>
+        Forgotten your password?{" "}
+        <Link to='/reset/password'>Reset </Link>
+      </div>
       <div className='or-divider'>
+        
         <hr />
         <div className='or-text'>or</div>
       </div>
@@ -110,6 +120,8 @@ function Login() {
         Don't have an account yet?{" "}
         <Link to='/account/register'>Create your account</Link>
       </div>
+
+      
     </>
   );
 }

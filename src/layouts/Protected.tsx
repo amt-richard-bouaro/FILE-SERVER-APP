@@ -14,10 +14,11 @@ const Protected = (props:USER_ROLES) => {
 
     if (user) {
 
+        if (user.must_change_password) {
+            return <Navigate to='/app/change/password' replace />;
+        }else
+
         if (props.restrictedTo.includes(user.role)) {
-                if(user.must_change_password){
-                     return  <Navigate to='/app/change/password' replace />; 
-            }
             
              return <Outlet />;
         }

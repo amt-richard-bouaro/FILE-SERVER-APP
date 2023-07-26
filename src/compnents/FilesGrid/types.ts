@@ -9,6 +9,7 @@ export type FILES_TYPE = {
         emailed_count: number,
         user_id: string,
         location: string,
+        ext:string,
         created_at: string,
         updated_at: string,
         mime_type: string 

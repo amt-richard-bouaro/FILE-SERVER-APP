@@ -50,13 +50,13 @@ const routes: {
             path: '/app/admin/settings'
 
         },
-        {
-            role: 'user',
-            name: 'Home',
-            icon: GoHome,
-            path: '/app/home'
+        // {
+        //     role: 'user',
+        //     name: 'Home',
+        //     icon: GoHome,
+        //     path: '/app/home'
 
-        },
+        // },
         {
             role: 'user',
             name: 'All Files',
@@ -68,7 +68,7 @@ const routes: {
             role: 'user',
             name: 'Recent',
             icon: GoClock,
-            path: '/app/admin/recent'
+            path: '/app/recent'
 
         },
         {
@@ -84,8 +84,7 @@ const routes: {
 
 const Routes = (props: USER_ROLE) => {
 
-    let location = useLocation();
-
+    const location = useLocation();
 
     const role = props.role
 

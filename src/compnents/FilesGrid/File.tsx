@@ -1,14 +1,15 @@
 
 import { GoStar } from "react-icons/go";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
-import { BsFillFileEarmarkPdfFill,  } from "react-icons/bs";
-import { FILES_TYPE } from "./types";
-import { _file_size, _truncate } from "../../utils";
+
+
+import { _file_size, _truncate, determineFileType } from "../../utils";
 import moment from 'moment';
+import { FILE_TYPE } from "../../types";
 
 type propsType = {
-    file: FILES_TYPE,
-    onClick: (event: React.MouseEvent<HTMLDivElement>, file: FILES_TYPE) => void
+    file: FILE_TYPE,
+    onClick: (event: React.MouseEvent<HTMLDivElement>, file: FILE_TYPE) => void
 }
 
 
@@ -16,7 +17,10 @@ type propsType = {
 
 
 
-const File = ({file, onClick}: propsType) => {
+const File = ({ file, onClick }: propsType) => {
+    
+const t = determineFileType(file.ext)
+
   return (
       <div className="file-card" id={file._id} onClick={(event) => onClick(event, file)} >
           <div className="file-card-top">
@@ -25,7 +29,7 @@ const File = ({file, onClick}: propsType) => {
           </div>
           <div className="file-card-body">
               <div className="file-icon">
-                  <BsFillFileEarmarkPdfFill />
+                  <t.icon />
               </div>
               <div className="file-title">
                   {_truncate(file.title)}

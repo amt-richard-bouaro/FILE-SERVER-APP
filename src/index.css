@@ -74,22 +74,17 @@ body{
 
 
 
-.change-password-container-overlay{
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(255, 255, 255, 0.201);
-  z-index: 100;
-  padding: 20px;
- 
-}
+
 
 .change-password-container{
 width: 100%;
-height: 100%;
+height: 100vh;
 /* max-width: 400px; */
 background-color: var(--secondary-background-color);
+color: var(--color-bold);
+padding: 20px;
 display: flex;
+flex-direction: column;
 justify-content: center;
 align-items: center;
 
@@ -782,9 +777,9 @@ color: #8b949e;
 }
 
 
-/* 404 */
 
-.container-404{
+
+.container-404, .plain-container{
 width: 100%;
 height: 100vh;
 display: flex;
@@ -795,7 +790,7 @@ color: var(--color-bold);
 padding: 40px;
 }
 
-.container-404 .items-404{
+.container-404 .items-404, .plain-container-item-center{
   max-width: 500px;
   width: 100%;
   display: flex;
@@ -812,7 +807,7 @@ opacity: .5;
 margin: 0;
 }
 
-.container-404 .items-404 .display-404-message{
+.container-404 .items-404 .display-404-message, .display-message{
   text-align: center;
   margin: 20px 0;
 }
@@ -977,6 +972,7 @@ height: 100vh;
 
 .app-container main > .contents{
 width: 100%;
+
 position: relative;
 
 /* background-color: #fff; */
@@ -1153,6 +1149,26 @@ margin-top: 20px;
 }
 
 
+.table-wrapper{
+  max-width: 100% ;
+  overflow-x: auto;
+}
+
+.table-wrapper > .files-table{
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  width: 100% ;
+}
+thead{
+  text-align: left;
+}
+
+th, td{
+  border-collapse: separate;
+ box-shadow: 0px 2px 2px rgba(0,0,0,0.25);
+padding: 10px;
+background-color: var(--secondary-background-color);
+}
 
 
 
@@ -1396,6 +1412,9 @@ overflow: hidden;
 
 }
 
+.table-wrapper{
+  display: none;
+}
 
 }
 
@@ -1552,6 +1571,10 @@ form.new-file-form-wrapper{
 }
 
 
+}
+
+.d-none{
+  display: none;
 }
 
 .danger{

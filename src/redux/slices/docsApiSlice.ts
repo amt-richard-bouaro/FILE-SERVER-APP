@@ -5,16 +5,23 @@ const DOCS_ENDPOINT = '/api/documents'
 
 export const docsApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        new: builder.mutation({
+        upload: builder.mutation({
             query: (data) => ({
-                url: `${DOCS_ENDPOINT}/add`,
+                url: `${DOCS_ENDPOINT}/upload`,
                 method: 'POST',
-                body: data
+                body: data,
             })
         }),
         documents: builder.mutation({
             query: () => ({
                 url: `${DOCS_ENDPOINT}/`,
+                method: 'Get',
+                
+            })
+        }),
+        recents: builder.mutation({
+            query: () => ({
+                url: `${DOCS_ENDPOINT}/recent/documents`,
                 method: 'Get',
                 
             })
@@ -40,6 +47,13 @@ export const docsApiSlice = apiSlice.injectEndpoints({
                 
             })
         }),
+         email: builder.mutation({
+            query: (data) => ({
+                url: `${DOCS_ENDPOINT}/email/${data}`,
+                method: 'GET',
+                
+            })
+        }),
         search: builder.mutation({
             query: (data) => ({
                 url: `${DOCS_ENDPOINT}/search`,
@@ -47,9 +61,16 @@ export const docsApiSlice = apiSlice.injectEndpoints({
                 body:data
             })
         }),
+         stats: builder.mutation({
+            query: (data) => ({
+                url: `${DOCS_ENDPOINT}/stats`,
+                method: 'GET'
+            
+            })
+        }),
         
     })
 });
 
 
-export const { useDocumentsMutation, useNewMutation, useUpdateMutation, useDeleteMutation, useDownloadMutation, useSearchMutation } = docsApiSlice;
+export const { useDocumentsMutation, useUploadMutation, useUpdateMutation, useDeleteMutation, useDownloadMutation, useSearchMutation, useEmailMutation, useRecentsMutation, useStatsMutation } = docsApiSlice;

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react'
-import { useDocumentsMutation, useDeleteMutation, useUpdateMutation, useDownloadMutation, useSearchMutation } from '../../redux/slices/docsApiSlice';
+import { useDocumentsMutation, useDeleteMutation, useUpdateMutation, useDownloadMutation, useSearchMutation, useEmailMutation } from '../../redux/slices/docsApiSlice';
 import { setDocuments, setSelectedDocument, clearSelectedDocument } from '../../redux/slices/docsSlice';
 
 import { AiOutlineTable } from "react-icons/ai";
@@ -17,7 +17,7 @@ import Header from '../../layouts/component/Header';
 import Drawer from '../../layouts/component/Drawer';
 import FilesGrid, { File } from '../../compnents/FilesGrid';
 import { DOCS_TYPE } from './types';
-import { _extractTitle, _file_size } from '../../utils';
+import { _extractTitle, _file_size, determineFileType } from '../../utils';
 // import { drawer } from '../../layouts/layoutScript';
 import { RootState } from '../../redux/store/store';
 import Button from '../../compnents/button';
@@ -26,6 +26,14 @@ import { FieldGroup } from '../../compnents/form-input';
 
 import moment from 'moment';
 import Feedback from '../../compnents/FeedBacks';
+import { IconType } from 'react-icons/lib';
+
+
+const fileIcon = (ext: string) => { 
+    const t = determineFileType(ext)
+
+    return <t.icon/>
+}
 
 
 const Files = () => {
@@ -33,16 +41,16 @@ const Files = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch()
 
-    const [getDocuments, { isLoading, isSuccess }] = useDocumentsMutation();
+    const [getDocuments] = useDocumentsMutation();
 
     const [updateDocuments] = useUpdateMutation();
     const [deleteDocument] = useDeleteMutation();
     const [downloadDocument] = useDownloadMutation();
     const [searchDocument] = useSearchMutation();
-
+    const [emailDocument] = useEmailMutation();
     // const [documents, setDocuments] = useState<DOCS_TYPE[]>([])
 
-    // const [selectedDoc, setSelectedDoc] = useState<DOCS_TYPE | null>(null);
+    const [emailFeedback, setEmailFeedback] = useState<{type: 'error'|'success', message:string} | null>(null);
 
     const [feedback, setFeedback] = useState<{type:'error'|'success', message:string} | null>(null);
 
@@ -57,6 +65,7 @@ const Files = () => {
         resolver: zodResolver(DOC_INFO)
     });
 
+    
 
     const markDocAsActive = (_id: string) => {
         const doc = document.getElementById(_id)! as HTMLDivElement;
@@ -76,7 +85,7 @@ const Files = () => {
 
         localStorage.setItem('s_doc', JSON.stringify({ _id }));
 
-
+      
     }
 
 
@@ -148,22 +157,43 @@ const Files = () => {
 
     const handleDownloadDocument = async (_id:string) => {
         
-        const response = await downloadDocument(_id)
-
+        const response= await downloadDocument(_id)
+        
         console.log(response);
+        
+        
+    }
+    const handleEmailDocument = async (_id:string) => {
+        
+        const response = await emailDocument(_id).unwrap();
+
+       
+           setEmailFeedback({ type: response.code === 'DOCUMENT_SENT_TO_MAIL'?'success':'error', message: response.message });
+
+           setTimeout(() => {
+            setEmailFeedback(null)
+           }, 5000);
+     
         
     }
 
     const handleSearch = async (e:React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
-
-        dispatch(clearSelectedDocument())
+        // console.log(e.target.value);
+try {
+   dispatch(clearSelectedDocument());
 
         let val = e.target.value;
 
         const response = await searchDocument({search:val}).unwrap();
 
-        dispatch(setDocuments(response.data)); 
+        dispatch(setDocuments(response.data));  
+} catch (error) {
+
+    console.log(error);
+    
+    
+}
+        
         
     }
 
@@ -222,7 +252,7 @@ const Files = () => {
 
     }, [documents, selectedDocument, setValue])
 
-    
+    let t;
 
 
     return (
@@ -308,10 +338,10 @@ const Files = () => {
 
             <Drawer title='File Preview'>
                 {
-                    selectedDocument ? (<>
+                    selectedDocument ?  ( <>
 
                         <div className='panel-preview-file-icon'>
-                            <BsFillFileEarmarkWordFill />
+                            {fileIcon(selectedDocument.ext)}
                         </div>
                         <div className="panel-preview-file-name-size">
                             <h4 className='panel-preview-file-name'>{selectedDocument.name}</h4>
@@ -370,7 +400,9 @@ const Files = () => {
 
                         <div className="preview-file-actions">
                             <h4 className="preview-file-title">Get Access</h4>
-                            <div className="preview-file-action">
+                            
+                            {emailFeedback ? <Feedback type={emailFeedback.type} message={emailFeedback.message} /> : null}
+                            <div className="preview-file-action mg-t-20" onClick={() => handleEmailDocument(selectedDocument._id)}>
                                 <div className="action-icon-wrapper share">
                                     <GoShare />
                                 </div>

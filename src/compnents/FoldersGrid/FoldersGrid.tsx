@@ -3,14 +3,20 @@ import Folder from "./Folder";
 
 
 
-type filesByType = {
-    folders: {}[]
+type foldersType = {
+  folders: {
+    ext: string;
+    count: number;
+    total_size: number;
+    
+    }[]
 }
 
-const FoldersGrid = ({ folders }: filesByType) => {
+const FoldersGrid = ({ folders }: foldersType) => {
     return (
         <div className="folders-grid">
-        {folders.map((folder, index) => <Folder key={index} />)
+        {folders.map((folder, index) =>
+          <Folder ext={folder.ext} count={folder.count} total_size={folder.total_size} key={index} />)
           }  
         </div>
   )

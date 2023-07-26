@@ -5,8 +5,8 @@ export type USER = {
     email: string
     role: "admin" | "user"
     must_change_password: boolean
-    created_at: Date
-    updated_at: Date
+    created_at: string
+    updated_at: string
 }
 
 export type DOCS_TYPE = {
@@ -17,9 +17,8 @@ export type DOCS_TYPE = {
     size: number,
     downloaded_count: number,
     emailed_count: number,
-    user_id: string,
-    location: string,
+    ext:string,
     created_at: string,
     updated_at: string,
-    mime_type: string
+ 
 };

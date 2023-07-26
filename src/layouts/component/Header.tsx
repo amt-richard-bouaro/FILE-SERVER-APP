@@ -10,13 +10,13 @@ import {
 
 
 type HEADER_PROPS_TYPE = {
-
+    hideSearchBar?: boolean;
     onSearch?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 
 
-const Header = ({ onSearch }:HEADER_PROPS_TYPE) =>{
+const Header = ({ onSearch, hideSearchBar }:HEADER_PROPS_TYPE) =>{
 
 
 return (
@@ -24,7 +24,7 @@ return (
       <div className='headers'>
           <span className='app-name'>Lizzy</span>
           <div className='other-headers-items'>
-              <div className='search-bar-wrapper'>
+                <div className={`search-bar-wrapper ${hideSearchBar && 'd-none'}`}>
                     <input type='search' name='' id='item-search' onChange={(event) => onSearch && onSearch(event)} />
                   <label htmlFor='item-search'>
                       <GoSearch />

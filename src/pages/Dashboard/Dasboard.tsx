@@ -1,7 +1,4 @@
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { clearUser } from '../../redux/slices/authSlice';
-import { useLogoutMutation } from '../../redux/slices/usersApiSlice';
+import { useStatsMutation } from '../../redux/slices/docsApiSlice';
 
 import {AiOutlineTable} from "react-icons/ai";
 
@@ -12,25 +9,30 @@ import Content, { Body } from '../../layouts/component/Content';
 
 import Header from '../../layouts/component/Header';
 import FoldersGrid from '../../compnents/FoldersGrid';
+import Table from '../../compnents/Table';
+import { useEffect, useState } from 'react';
 
 
 
 const Dasboard = () => {
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+const [folders, setFolders] = useState(null)
+  const [performing, setPerforming] = useState(null)
+  const [docStats] = useStatsMutation();
 
-  const [logout, { isLoading, isSuccess }] = useLogoutMutation();
-
-  const handleLogout = async () => {
+  const loadStats = async () => {
 
     try {
 
-      await logout({}).unwrap();
+      const res = await docStats({}).unwrap();
 
-      dispatch(clearUser());
+      if (res.data) {
 
-      navigate('/')
+        setFolders(res.data.folders);
+
+        setPerforming(res.data.performing)
+      }
+      
 
     } catch (error) {
       console.log(error);
@@ -40,10 +42,19 @@ const Dasboard = () => {
 
   }
 
+
+  useEffect(() => {
+    loadStats();
+  }, [])
+  
+
+  
+  
+
   return (
     <Content>
 
-      <Header />
+      <Header hideSearchBar/>
       <Body>
 
 
@@ -73,10 +84,11 @@ const Dasboard = () => {
 
           </div>
         </div>
-         
-        <FoldersGrid folders={[{}]} />
+         {folders &&  <FoldersGrid folders={folders} />}
+       
         
         <div className="section-divider"></div>
+        
         <div className="breadcrumb">
           <div className="breadcrumb-left-items">
             <div className="breadcrumb-left-item addon">
@@ -103,7 +115,8 @@ const Dasboard = () => {
 
           </div>
         </div>
-
+        {performing && <Table files={performing} />}
+        
 
         
       </Body>
