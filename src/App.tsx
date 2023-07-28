@@ -22,11 +22,13 @@ function App() {
   return <Routes>
 
     <Route path='/' element={<Navigate to='/account/login' />} />
+
     <Route path='/account' element={<DefaultLayout />} >
       <Route index element={<Login />} />
       <Route path='login' element={<Login />} />
       <Route path='register' element={<Register />} />
      
+  
     </Route>
     
     <Route path='/app' element={<AppLayout />} >
@@ -52,11 +54,10 @@ function App() {
 
     </Route>
 
-    <Route path='' element={<Protected restrictedTo={['user', 'admin']} />}>
-
-      <Route path='/change/password' element={<ChangePassword />} />
-
+    <Route path='/myaccount' element={<Protected restrictedTo={['admin','user']} />}>
+      <Route path='/myaccount/change/password' element={<ChangePassword />} />
     </Route>
+      
     <Route path='/reset/password' element={<Reset />} />
     
     <Route path='*' element={<NotFound />} />

@@ -1,6 +1,6 @@
 import { useState,useEffect, CSSProperties } from "react";
 import { useNavigate } from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import { FieldGroup } from "../../compnents/form-input";
 import Button from "../../compnents/button";
 import Loading from "../../compnents/Loading";
@@ -14,6 +14,7 @@ import { z } from 'zod'
 import Feedback from "../../compnents/FeedBacks";
 import { ErrorResponse } from "../../types";
 import { RootState } from "../../redux/store/store";
+import { setUser } from "../../redux/slices/authSlice";
 
 const CHANGE_PASSWORD_DATA = z.object({
     currentPassword: z.string()
@@ -37,6 +38,13 @@ const CHANGE_PASSWORD_DATA = z.object({
 
 });
 
+type RES = {
+    code: string;
+    message: string;
+    type: string;
+    data?: any;
+}
+
 type CHANGE_PASSWORD_DATA = z.infer<typeof CHANGE_PASSWORD_DATA>
 
 
@@ -48,8 +56,11 @@ const ChangePassword = () => {
 
     const [loading, setLoading] = useState(false);
 
-    const { user } = useSelector((state:RootState) => state.auth)
+    const { user } = useSelector((state: RootState) => state.auth)
+    
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
 
     const [changeUserPassword] = useChangePasswordMutation()
 
@@ -62,9 +73,10 @@ const ChangePassword = () => {
         
         try {
 
-            const response = await changeUserPassword(data).unwrap();
+            const response: RES = await changeUserPassword(data).unwrap();
 
             if (response.code === 'PASSWORD_CHANGED') {
+                dispatch(setUser({ ...response.data }));
                 setLoading(false);
                 setFeedback({ type: 'success', message: response.message });
                 reset();
@@ -90,9 +102,9 @@ const ChangePassword = () => {
             }
 
 
-            setTimeout(() => {
-                setFeedback(null);
-            }, 5000)
+            // setTimeout(() => {
+            //     setFeedback(null);
+            // }, 5000)
         }
 
     }

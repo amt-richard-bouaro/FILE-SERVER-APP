@@ -152,7 +152,6 @@ function Register() {
           form="regForm"
         />
       </form>
-
       <div className='or-divider'>
         <hr />
         <div className='or-text'>or</div>
