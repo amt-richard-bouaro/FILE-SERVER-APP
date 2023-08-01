@@ -50,7 +50,7 @@ const Files = () => {
     const [emailDocument] = useEmailMutation();
     // const [documents, setDocuments] = useState<DOCS_TYPE[]>([])
 
-    const [emailFeedback, setEmailFeedback] = useState<{type: 'error'|'success', message:string} | null>(null);
+    const [emailDownloadFeedback, setEmailDownloadFeedback] = useState<{type: 'error'|'success', message:string} | null>(null);
 
     const [feedback, setFeedback] = useState<{type:'error'|'success', message:string} | null>(null);
 
@@ -157,8 +157,7 @@ const Files = () => {
 
     const handleDownloadDocument = async (_id:string) => {
         
-        const response= await downloadDocument(_id)
-        
+        const response = await downloadDocument(_id) 
         console.log(response);
         
         
@@ -168,10 +167,10 @@ const Files = () => {
         const response = await emailDocument(_id).unwrap();
 
        
-           setEmailFeedback({ type: response.code === 'DOCUMENT_SENT_TO_MAIL'?'success':'error', message: response.message });
+           setEmailDownloadFeedback({ type: response.code === 'DOCUMENT_SENT_TO_MAIL'?'success':'error', message: response.message });
 
            setTimeout(() => {
-            setEmailFeedback(null)
+            setEmailDownloadFeedback(null)
            }, 5000);
      
         
@@ -401,7 +400,7 @@ try {
                         <div className="preview-file-actions">
                             <h4 className="preview-file-title">Get Access</h4>
                             
-                            {emailFeedback ? <Feedback type={emailFeedback.type} message={emailFeedback.message} /> : null}
+                            {emailDownloadFeedback ? <Feedback type={emailDownloadFeedback.type} message={emailDownloadFeedback.message} /> : null}
                             <div className="preview-file-action mg-t-20" onClick={() => handleEmailDocument(selectedDocument._id)}>
                                 <div className="action-icon-wrapper share">
                                     <GoShare />

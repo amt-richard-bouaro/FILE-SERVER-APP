@@ -16,14 +16,14 @@ export const docsApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: `${DOCS_ENDPOINT}/`,
                 method: 'Get',
-                
+
             })
         }),
         recents: builder.mutation({
             query: () => ({
                 url: `${DOCS_ENDPOINT}/recent/documents`,
                 method: 'Get',
-                
+
             })
         }),
         update: builder.mutation({
@@ -37,38 +37,37 @@ export const docsApiSlice = apiSlice.injectEndpoints({
             query: (data) => ({
                 url: `${DOCS_ENDPOINT}/destroy/${data}`,
                 method: 'DELETE',
-                
+
             })
         }),
         download: builder.mutation({
             query: (data) => ({
                 url: `${DOCS_ENDPOINT}/download/${data}`,
-                method: 'GET',
-                
+                method: 'GET',          
             })
         }),
-         email: builder.mutation({
+        email: builder.mutation({
             query: (data) => ({
                 url: `${DOCS_ENDPOINT}/email/${data}`,
                 method: 'GET',
-                
+
             })
         }),
         search: builder.mutation({
             query: (data) => ({
                 url: `${DOCS_ENDPOINT}/search`,
                 method: 'POST',
-                body:data
+                body: data
             })
         }),
-         stats: builder.mutation({
+        stats: builder.mutation({
             query: (data) => ({
                 url: `${DOCS_ENDPOINT}/stats`,
                 method: 'GET'
-            
+
             })
         }),
-        
+
     })
 });
 
