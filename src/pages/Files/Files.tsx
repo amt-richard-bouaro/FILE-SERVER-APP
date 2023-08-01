@@ -5,7 +5,7 @@ import { useDocumentsMutation, useDeleteMutation, useUpdateMutation, useDownload
 import { setDocuments, setSelectedDocument, clearSelectedDocument } from '../../redux/slices/docsSlice';
 
 import { AiOutlineTable } from "react-icons/ai";
-import { BsFillFileEarmarkWordFill } from "react-icons/bs";
+
 import { GoDownload, GoShare, GoPencil } from "react-icons/go";
 import { PiListFill, PiSquaresFourBold, PiFolderSimpleBold, PiCaretDownBold, PiFolderOpenBold } from "react-icons/pi";
 
@@ -15,8 +15,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Content, { Body } from '../../layouts/component/Content';
 import Header from '../../layouts/component/Header';
 import Drawer from '../../layouts/component/Drawer';
-import FilesGrid, { File } from '../../compnents/FilesGrid';
-import { DOCS_TYPE } from './types';
+import FilesGrid, { File as FILE } from '../../compnents/FilesGrid';
+
 import { _extractTitle, _file_size, determineFileType } from '../../utils';
 // import { drawer } from '../../layouts/layoutScript';
 import { RootState } from '../../redux/store/store';
@@ -26,7 +26,8 @@ import { FieldGroup } from '../../compnents/form-input';
 
 import moment from 'moment';
 import Feedback from '../../compnents/FeedBacks';
-import { IconType } from 'react-icons/lib';
+
+import { baseUrl } from '../../redux/slices/apiSlice';
 
 
 const fileIcon = (ext: string) => { 
@@ -157,21 +158,27 @@ const Files = () => {
 
     const handleDownloadDocument = async (_id:string) => {
         
-        const response = await downloadDocument(_id) 
-        console.log(response);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = `${baseUrl}/api/documents/download/${_id}`
+    
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
         
-        
+        document.body.removeChild(downloadLink);
     }
     const handleEmailDocument = async (_id:string) => {
         
         const response = await emailDocument(_id).unwrap();
 
-       
-           setEmailDownloadFeedback({ type: response.code === 'DOCUMENT_SENT_TO_MAIL'?'success':'error', message: response.message });
+    
+            setEmailDownloadFeedback({ type: response.code === 'DOCUMENT_SENT_TO_MAIL'?'success':'error', message: response.message });
 
            setTimeout(() => {
             setEmailDownloadFeedback(null)
            }, 5000);
+   
+  
+           
      
         
     }
@@ -308,7 +315,7 @@ try {
                         {
                             
                             documents.map((file, index) =>
-                                <File key={index} file={file} onClick={(e, file) => {
+                                <FILE key={index} file={file} onClick={(e, file) => {
                                    
                                     markDocAsActive(file._id)
                                     setAllowEdit(false);
