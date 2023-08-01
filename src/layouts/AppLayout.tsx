@@ -1,27 +1,11 @@
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties } from "react";
 import { useTheme } from "../context/ThemeProvider";
 import { Outlet } from "react-router-dom";
-import {useSelector} from 'react-redux'
-import {
-    AiOutlineCloudServer as Logo,
-    AiOutlinePlusSquare,
-} from "react-icons/ai";
-import {
-    // GoHome,
-    GoFileDirectory,
-    GoSearch,
-    GoStar,
-    GoShare,
-    GoDownload
-} from "react-icons/go";
-import { FaGripLinesVertical, FaEllipsisH } from "react-icons/fa";
-import {
-    BsFillFileEarmarkWordFill,
-} from "react-icons/bs";
-import { drawer } from "./layoutScript";
-import ChangePassword from "../compnents/ChangePassword";
+import { useSelector } from 'react-redux'
+
 import Routes from "./component/Routes";
 import { RootState } from "../redux/store/store";
+
 import Nav from "./component/Nav";
 
 export type USER = {
@@ -40,10 +24,6 @@ export type USER = {
 const AppLayout = () => {
     const { theme } = useTheme();
 
-    drawer();
-
-    
-
     const { user } = useSelector((state: RootState) => state.auth);
 
     const authUser: USER = user;
@@ -51,15 +31,10 @@ const AppLayout = () => {
     return (
       
             
-        <div className='app-container' style={{ ...theme } as CSSProperties}>
-{/* <ChangePassword /> */}
-
-           
+        <div className='app-container' style={{ ...theme } as CSSProperties}> 
             <Nav>
-                <Routes role={authUser.role} />
+                <Routes role={authUser?.role} />
             </Nav>
-           
-
             <main className='main-content-area'>
                 <Outlet />
                 

@@ -8,12 +8,20 @@ type USER_ROLES = {
 const Protected = (props:USER_ROLES) => {
 
     const { user } = useSelector((state: RootState) => state.auth);
+
+    // console.log(user);
+    
+
     if (user) {
 
+        if (user.must_change_password) {
+            
+         
+            
+            return <Navigate to='/myaccount/change/password' replace />;
+        }
+
         if (props.restrictedTo.includes(user.role)) {
-                if(user.must_change_password){
-                     return  <Navigate to='/app/change/password' replace />; 
-            }
             
              return <Outlet />;
         }
