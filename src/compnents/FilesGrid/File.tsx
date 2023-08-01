@@ -43,8 +43,8 @@ const t = determineFileType(file.ext)
                   <span className='readable-file-size'> { _file_size(file.size)}</span>
               </div>
               <div className="file-uploaded-at">
-                  <span className='file-uploaded-at-text'>Since</span>
-                  <span className='file-uploaded-at-date'>{moment(file.updated_at).fromNow()}</span>
+                  <span className='file-uploaded-at-text'>Date</span>
+                  <span className='file-uploaded-at-date'>{moment(file.updated_at).format('DD/MM/YYYY')}</span>
               </div>
           </div>
       </div>

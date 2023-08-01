@@ -20,7 +20,7 @@ import { RootState } from '../../redux/store/store';
 
 import moment from 'moment';
 import Feedback from '../../compnents/FeedBacks';
-
+import { baseUrl } from '../../redux/slices/apiSlice';
 const fileIcon = (ext: string) => {
     const t = determineFileType(ext)
 
@@ -72,15 +72,12 @@ const Recent = () => {
 
     const handleDownloadDocument = async (_id: string) => {
 
-        const response = await downloadDocument(_id)
+        const downloadLink = document.createElement('a');
+        downloadLink.href = `${baseUrl}/api/documents/download/${_id}`
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
 
-        // setEmailFeedback({ type: response.code === 'DOCUMENT_SENT_TO_MAIL' ? 'success' : 'error', message: response.message });
-
-        // setTimeout(() => {
-        //     setEmailFeedback(null)
-        // }, 5000);
-
-
+        document.body.removeChild(downloadLink);
     }
     const handleEmailDocument = async (_id: string) => {
 
