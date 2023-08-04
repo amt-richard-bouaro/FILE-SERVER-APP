@@ -28,6 +28,7 @@ import moment from 'moment';
 import Feedback from '../../compnents/FeedBacks';
 
 import { baseUrl } from '../../redux/slices/apiSlice';
+import Loading from '../../compnents/Loading';
 
 
 const fileIcon = (ext: string) => { 
@@ -159,8 +160,8 @@ const Files = () => {
     const handleDownloadDocument = async (_id:string) => {
         
         const downloadLink = document.createElement('a');
-        downloadLink.href = `${baseUrl}/api/documents/download/${_id}`
-    
+        downloadLink.href = `${baseUrl}/api/documents/download/${_id}`;
+        downloadLink.setAttribute('target', '_blank');
         document.body.appendChild(downloadLink);
         downloadLink.click();
         
@@ -309,7 +310,8 @@ try {
                         </div>
                     </div>
 
-                    
+                   
+                   
         {documents.length > 0 ?
                     <FilesGrid >
                         {
@@ -331,8 +333,9 @@ try {
                         </FilesGrid>
                         
                         : (
-
+                            
                             <div className="documents-empty">
+                                <Loading />
                                 <PiFolderOpenBold className='empty-icon' size={50}/>
                                 <p>No Available Document Found</p>
                             </div>

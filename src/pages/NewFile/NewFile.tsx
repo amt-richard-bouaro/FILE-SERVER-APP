@@ -14,6 +14,7 @@ import { FieldGroup } from '../../compnents/form-input';
 import Button from '../../compnents/button';
 import { DOC_INFO } from './types';
 import Feedback from '../../compnents/FeedBacks';
+import Loading from '../../compnents/Loading';
 
 
 
@@ -22,7 +23,7 @@ const NewFile = () => {
   const [file, setFile] = useState<File | null>(null);
   const [feedback, setFeedback] = useState<{type: 'error'|'success', message: string}| null>(null)
 
-  const [uploadDocument] = useUploadMutation();
+  const [uploadDocument, {isLoading}] = useUploadMutation();
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<DOC_INFO>({
     resolver: zodResolver(DOC_INFO)
@@ -229,6 +230,7 @@ useEffect(() => {
           </div>
         </div>
         {feedback ? <Feedback type={feedback.type} message={feedback.message} /> : null}
+        {isLoading ? <Loading /> : null}
         <form onSubmit={handleSubmit(handleFileSubmit)} className="new-file-form-wrapper mg-t-20" id='newFileForm'>
           <label className="form-file-upload" id="file-drop-area" htmlFor='doc'>
             <input type="file" id="doc" style={{display:'none'}} />

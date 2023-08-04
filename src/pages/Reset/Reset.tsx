@@ -10,11 +10,12 @@ import { FaArrowLeft } from 'react-icons/fa'
 import Feedback from '../../compnents/FeedBacks';
 import { useResetPasswordMutation } from '../../redux/slices/usersApiSlice';
 import { ErrorResponse } from '../../types';
+import Loading from '../../compnents/Loading';
 
 const Reset = () => {
     const { theme } = useTheme();
 
-    const [resetPassword] = useResetPasswordMutation()
+    const [resetPassword, {isLoading}] = useResetPasswordMutation()
 
     const [feedback, setFeedback] = useState<{ type: 'error' | 'success', message: string } | null>(null)
 
@@ -70,6 +71,7 @@ const Reset = () => {
 
           <div className=" plain-container-item-center">
               {feedback ? <Feedback type={feedback.type} message={feedback.message} /> : null}
+              {isLoading ? <Loading /> : null}
               <form onSubmit={handleSubmit(handleReset)} className='form-container mg-t-20' id="resetForm">
                   <FieldGroup label='Email' id='email'>
                       <input className='field-input '
