@@ -70,12 +70,13 @@ function Register() {
 
   return (
     <>
-      {isLoading ? <Loading /> : null}
+     
       <p className='sign-in-header'>Register your account</p>
 
       {/* feedback */}
       {feedback.err ? <Feedback type="error" message={feedback.message} /> : null}
       {feedback.success ? <Feedback type="success" message={feedback.message} /> : null}
+      {isLoading ? <Loading /> : null}
       <form  onSubmit={handleSubmit(handleRegisteration)}   className='form-container' id="regForm">
         <FieldGroup label='Surname' id='surname' >
           <input className='field-input ' 

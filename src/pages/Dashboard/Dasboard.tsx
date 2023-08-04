@@ -11,14 +11,19 @@ import Header from '../../layouts/component/Header';
 import FoldersGrid from '../../compnents/FoldersGrid';
 import Table from '../../compnents/Table';
 import { useEffect, useState } from 'react';
+import Loading from '../../compnents/Loading';
 
 
 
 const Dasboard = () => {
 
-const [folders, setFolders] = useState(null)
+  const [folders, setFolders] = useState<{
+    ext: string;
+    count: number;
+    total_size: number;
+}[] | null>(null)
   const [performing, setPerforming] = useState(null)
-  const [docStats] = useStatsMutation();
+  const [docStats, {isLoading}] = useStatsMutation();
 
   const loadStats = async () => {
 
@@ -84,7 +89,8 @@ const [folders, setFolders] = useState(null)
 
           </div>
         </div>
-         {folders &&  <FoldersGrid folders={folders} />}
+
+         {folders && folders.length > 0 ?  <FoldersGrid folders={folders} /> : <Loading/>}
        
         
         <div className="section-divider"></div>

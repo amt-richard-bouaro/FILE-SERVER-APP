@@ -69,10 +69,11 @@ function Login() {
 
   return (
     <>
-      {isLoading ? <Loading /> : null}
+      
 
       <p className='sign-in-header'>Sign in to your account</p>
-      {error.err ? <Feedback type="error" message={error.message } /> : null}
+      {error.err ? <Feedback type="error" message={error.message} /> : null}
+      {isLoading ? <Loading /> : null}
       <form onSubmit={handleSubmit(handleLogin)} className='form-container' id="loginForm">
         <FieldGroup label='Email' id='email'>
           <input className='field-input '

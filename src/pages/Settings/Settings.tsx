@@ -15,6 +15,7 @@ import { FieldGroup } from '../../compnents/form-input';
 import Button from '../../compnents/button';
 import Feedback from '../../compnents/FeedBacks';
 import { ErrorResponse } from '../../types';
+import Loading from '../../compnents/Loading';
 
 const Settings = () => {
 
@@ -24,7 +25,7 @@ const Settings = () => {
 
   const [feedback, setFeedback] = useState<{ type: 'error' | 'success', message: string } | null>(null);
 
-  const [changeUserPassword] = useChangePasswordMutation();
+  const [changeUserPassword, {isLoading}] = useChangePasswordMutation();
   
   const handleChangePassword: SubmitHandler<CHANGE_PASSWORD_DATA> = async (data) => {
 
@@ -102,6 +103,7 @@ const Settings = () => {
           </div>
         </div>
         {feedback ? <Feedback type={feedback.type} message={feedback.message} /> : null}
+        {isLoading ? <Loading /> : null}
         <form onSubmit={handleSubmit(handleChangePassword)} className="change-password-form-wrapper mg-t-20" id='changePassForm'>
           
             <FieldGroup label="Current Password" id="curPass">
