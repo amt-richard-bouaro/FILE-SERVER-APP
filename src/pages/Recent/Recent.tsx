@@ -187,7 +187,7 @@ const Recent = () => {
                             <div className="breadcrumb-left-item addon">
                                 <PiFolderSimpleBold /><PiCaretDownBold />
                             </div>
-                            <span>Home</span>
+                            <span>Recent Files</span>
 
                         </div>
 
