@@ -34,12 +34,13 @@ function DefaultLayout() {
 			<div className='auth-onboard-area'>
 				<div className='auth-onboarding-msg-container'>
 					<h2 className='onboarding-msg-title'>
-						Learn About the Features in Lezzy Cloud Files 1.0.0{" "}
+						Learn About the Features in Lizzy Cloud Docs 1.0.0{" "}
 					</h2>
 					<p className='onboarding-msg-paragraph'>
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-						Minima consectetur necessitatibus hic adipisci repellendus
-						fuga qui veritatis quaerat, ducimus harum!
+						Are you tired of the hassle of physically collecting 
+						essential documents like wedding cards, admission forms, 
+						and other important papers from various businesses? 
+						
 					</p>
 				</div>
 				<img src={themeType === 'dark' ? onboardImg2 : onboardImg} alt='' className='onboarding-img' />
