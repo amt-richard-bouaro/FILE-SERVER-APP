@@ -286,7 +286,7 @@ try {
                             <div className="breadcrumb-left-item addon">
                                 <PiFolderSimpleBold /><PiCaretDownBold />
                             </div>
-                            <span>Home</span>
+                            <span>All Files</span>
 
                         </div>
 
