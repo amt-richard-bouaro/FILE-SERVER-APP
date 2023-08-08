@@ -725,13 +725,13 @@ font-weight: 500;
 .or-divider{
 width: 100%;
 position: relative;
-margin: 5px 0;
+margin: 15px 0;
 }
 .or-divider .or-text{
 position: absolute;
 top: -50% ;
 left: calc(50% - 10px);
-padding: 3px 5px;
+padding: 5px;
 background-color: var(--secondary-background-color);
 color: #8b949e;
 }
