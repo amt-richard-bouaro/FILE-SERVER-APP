@@ -114,7 +114,7 @@ function Login() {
       <div className='or-divider'>
         
         <hr />
-        <div className='or-text'>or</div>
+{/*         <div className='or-text'>or</div> */}
       </div>
 
       <div className='account-link'>
